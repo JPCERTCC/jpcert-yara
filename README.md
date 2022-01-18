@@ -1,2 +1,3 @@
-# jpcert-yara
-JPCERT/CC public YARA rules repository 
+# JPCERT/CC YARA rules
+
+This repository is JPCERT/CC public YARA rules. 
