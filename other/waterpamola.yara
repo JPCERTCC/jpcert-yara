@@ -70,3 +70,62 @@ rule WaterPamola_webshell_eval {
      condition:
         uint32(0) == 0x68703F3C and 4 of them
 }
+
+rule WaterPamola_cookieswebshell_php {
+    meta:
+        description = "Cookies_webshell in Water Pamola"
+        author = "JPCERT/CC Incident Response Group"
+
+    strings:
+        $func1 = "@$_POST['cookie'];"
+        $func2 = "explode(\"|\", $cookie);"
+        $func3 = "openssl_pkey_get_public"
+        $func4 = "openssl_public_decrypt"
+        $func5 = "@create_function"
+        $pubkey1 = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCPYZ72hGKjj5T+NBa7Y18yuRBC"
+
+    condition:
+        uint32(0) == 0x68703F3C and (4 of ($func*) or 1 of ($pubkey*))
+}
+
+rule WaterPamola_includewebshell_php {
+    meta:
+        description = "Include only_pcd webshell in Water Pamola"
+        author = "JPCERT/CC Incident Response Group"
+
+    strings:
+        $func1 = "@INCLUDE_ONCE($_FILES['only_pcd']['tmp_name']);"
+
+    condition:
+        uint32(0) == 0x68703F3C and all of them
+}
+
+rule WaterPamola_javascriptstealer_encode {
+     meta:
+        description = "JavaScript stealer using water pamola"
+        author = "JPCERT/CC Incident Response Group"
+
+     strings:
+        $func1 = ".split('|'),0,{}));"
+        $func2 = "return(c<a?'':e(parseInt(c/a)))+((c=c%a)>35?String.fromCharCode(c+29):c.toString(36))"
+        $func3 = "RegExp('\\b'+e(c)+'\\b','g'),k[c]);"
+        $func4 = "while(c--)if(k[c])"
+
+     condition:
+       all of them
+}
+
+rule WaterPamola_phpstealer_encode {
+     meta:
+        description = "PHP stealer using water pamola"
+        author = "JPCERT/CC Incident Response Group"
+
+     strings:
+        $func1 = "header(\"Access-Control-Allow-Origin: *\");"
+        $func2 = "$ip=@$_SERVER['HTTP_CF_CONNECTING_IP'];"
+        $func3 = "@$errlogs=fopen(pack('H*'"
+        $func4 = "@$write=fwrite($errlogs,$mode);"
+
+     condition:
+       uint32(0) == 0x68703F3C and all of them
+}

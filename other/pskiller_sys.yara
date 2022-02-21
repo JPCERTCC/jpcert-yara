@@ -1,6 +1,8 @@
+import "pe"
+
 rule malware_PSKiller_sys {
     meta:
-      description = "detect PSKiller_sys Atom Silom and Rook"
+      description = "detect PSKiller_sys Rook, Atom Silo"
       author = "JPCERT/CC Incident Response Group"
       hash1 = "f807699b6c71382c7d0da61d2becf29d1818483597213f2194bc00e63d47235e"
       hash2 = "c232b3d1ea2273b8ad827724c511d032cda7f2c66567638abf922a5d5287e388"
@@ -114,17 +116,15 @@ rule malware_PSKiller_sys {
       $str124 = "RepUtils.exe" fullword ascii
       $str125 = "VHostComms.exe" fullword ascii
 
-      /* API */
-      $api1 = "PsGetProcessId" fullword ascii
-      $api2 = "PsLookupProcessByProcessId" fullword ascii	  
-      $api3 = "PsGetProcessImageFileName" fullword ascii
-      $api4 = "_stricmp" fullword ascii
-      $api5 = "ZwTerminateProcess" fullword ascii
-      $api6 = "ZwClose" fullword ascii
-
     condition:
       (uint16(0) == 0x5A4D)
-      and (filesize < 20KB)
-      and (all of ($api*))
-      and (20 of ($str*))
+      and (filesize < 1MB)
+      and pe.imports("ntoskrnl.exe", "PsGetProcessId")
+      and pe.imports("ntoskrnl.exe", "PsLookupProcessByProcessId")
+      and pe.imports("ntoskrnl.exe", "PsGetProcessImageFileName")
+      and pe.imports("ntoskrnl.exe", "_stricmp")
+      and pe.imports("ntoskrnl.exe", "ZwTerminateProcess")
+      and pe.imports("ntoskrnl.exe", "ZwClose")
+      and (pe.subsystem == pe.SUBSYSTEM_NATIVE)
+      and (3 of ($str*))
 }
