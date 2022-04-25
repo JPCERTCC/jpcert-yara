@@ -9,12 +9,14 @@ rule upx_antiunpack_elf32 {
        (
          (
            for any magic in (uint32(filesize - 0x24)) : (magic == uint32(uint16(0x2C) * uint16(0x2A) + uint16(0x28) + 4)) and
-           not for any magic in (0x21585055, 0) : (magic == uint32(uint16(0x2C) * uint16(0x2A) + uint16(0x28) + 4))
+           not for any magic in (0x21585055, 0) : (magic == uint32(uint16(0x2C) * uint16(0x2A) + uint16(0x28) + 4)) and
+           uint32(uint16(0x2C) * uint16(0x2A) + uint16(0x28) + 4) > 0x0000FFFF
          )
          or
          (
            for any magic in (uint32(filesize - 0x24)) : (magic == uint32(uint16be(0x2C) * uint16be(0x2A) + uint16be(0x28) + 4)) and
-           not for any magic in (0x21585055, 0) : (magic == uint32(uint16be(0x2C) * uint16be(0x2A) + uint16be(0x28) + 4))
+           not for any magic in (0x21585055, 0) : (magic == uint32(uint16be(0x2C) * uint16be(0x2A) + uint16be(0x28) + 4)) and
+           uint32(uint16be(0x2C) * uint16be(0x2A) + uint16be(0x28) + 4) > 0x0000FFFF
          )
        )
 }
@@ -30,12 +32,14 @@ rule upx_antiunpack_elf64 {
        (
          (
            for any magic in (uint32(filesize - 0x24)) : (magic == uint32(uint16(0x36) * uint16(0x38) + uint16(0x34) + 4)) and
-           not for any magic in (0x21585055, 0) : (magic == uint32(uint16(0x36) * uint16(0x38) + uint16(0x34) + 4))
+           not for any magic in (0x21585055, 0) : (magic == uint32(uint16(0x36) * uint16(0x38) + uint16(0x34) + 4)) and
+           uint32(uint16(0x36) * uint16(0x38) + uint16(0x34) + 4) > 0x000000FF
          )
          or
          (
            for any magic in (uint32(filesize - 0x24)) : (magic == uint32(uint16be(0x36) * uint16be(0x38) + uint16be(0x34) + 4)) and
-           not for any magic in (0x21585055, 0) : (magic == uint32(uint16be(0x36) * uint16be(0x38) + uint16be(0x34) + 4))
+           not for any magic in (0x21585055, 0) : (magic == uint32(uint16be(0x36) * uint16be(0x38) + uint16be(0x34) + 4)) and
+           uint32(uint16be(0x36) * uint16be(0x38) + uint16be(0x34) + 4) > 0x000000FF
          )
        )
 }
