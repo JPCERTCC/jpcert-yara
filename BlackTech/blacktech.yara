@@ -354,3 +354,105 @@ rule BlackTech_BTSDoor_str {
        uint32(uint32(0x3c)) == 0x00004550 and
        (1 of ($pdb*) or 4 of ($data*))
 }
+
+rule BlackTech_mabackdoor_str {
+     meta:
+        description = "Multi-architecture (ARM or x64) backdoor in BlackTech"
+        author = "JPCERT/CC Incident Response Group"
+        hash = "3d18bb8b9a5af20ab10441c8cd40feff0aabdd3f4c669ad40111e3aa5e8c54b8"
+        hash = "9603b62268c2bbb06da5c99572c3dc2ec988c49c86db2abc391acf53c1cccceb"
+
+     strings:
+        $msg1 = "[+] my_dns_query failed." ascii fullword
+        $msg2 = "[+] my_dns_query success." ascii fullword
+        $msg3 = "[+] connect to %s:%d failed." ascii fullword
+        $msg4 = "[+] connect to %s:%d success." ascii fullword
+        $msg5 = "cmd: %s" ascii fullword
+        $msg6 = "path: %s" ascii fullword
+        $msg7 = "has address" ascii fullword
+        $msg8 = "host %s" ascii fullword
+        $msg9 = {84 D2 (74 ?? |0F ?? ?? ?? 00 00) 80 FA 72 (74 ?? |0F ?? ?? ?? 00 00) 80 FA 77 (74 ?? |0F ?? ?? ?? 00 00) 80 FA 65 (74 ?? |0F ?? ?? ?? 00 00)}
+        $func1 = "exec_cmd_send_xor" ascii fullword
+        $func2 = "exec_cmd" ascii fullword
+        $func3 = "rc4_init" ascii fullword
+        $func4 = "my_dns_query" ascii fullword
+        $func5 = "rc4_key" ascii fullword
+        $func6 = "daemon_init" ascii fullword
+        $key1 = "pASSword699" ascii fullword
+        $key2 = "345asdflkasduf" ascii fullword
+
+     condition:
+       uint32(0) == 0x464C457F and
+       (4 of ($msg*) or 4 of ($func*) or 1 of ($key*))
+}
+
+rule BlackTech_SelfMakeLoader_str {
+     meta:
+        description = "SelfMake(SpiderPig) Loader in BlackTech"
+        author = "JPCERT/CC Incident Response Group"
+        hash = "2657ca121a3df198635fcc53efb573eb069ff2535dcf3ba899f68430caa2ffce"
+
+     strings:
+        $s1 = { 73 65 6C 66 6D 61 6B 65 3? 41 70 70 }
+        $s2 = "fixmeconfig"
+        $s3 = "[+] config path:%s"
+        $cmp_magic_num = { 81 7C ?? ?? (D0 D9 FE E1 | EE D8 FF E0) }
+
+     condition:
+       uint16(0) == 0x5A4D and (all of ($s*) or $cmp_magic_num)
+}
+
+rule BlackTech_HeavyROTLoader {
+     meta:
+        description = "HeavyROT Loader in BlackTech"
+        author = "JPCERT/CC Incident Response Group"
+        hash = "F32318060B58EA8CD458358B4BAE1F82E073D1567B9A29E98EB887860CEC563C"
+
+     strings:
+        $t1 = { 68 D8 A6 08 00 E8 }
+        $t2 = { 43 81 FB 00 97 49 01 }
+        $calc_key = { 63 51 E1 B7 8B ?? 8B ?? 81 ?? 00 10 00 00 C1 ?? 10 0B }
+        $parse_data = { 8D 6F EE 8B 10 66 8B 70 10 8B 58 04 89 54 24 28 8B 50 08 3B F5 }
+
+     condition:
+       all of ($t*) or $calc_key or $parse_data
+}
+
+rule BlackTech_SpiderRAT_str {
+     meta:
+        description = "Spider(SpiderPig) RAT in BlackTech"
+        author = "JPCERT/CC Incident Response Group"
+        hash = "C2B23689CA1C57F7B7B0C2FD95BFEF326D6A22C15089D35D31119B104978038B"
+
+     strings:
+        $msg1 = "InternetSetOption m_ProxyUserName Error."
+        $msg2 = "InternetSetOption m_ProxyPassWord Error."
+        $msg3 = "pWork->HC->HttpSendMessage failed!"
+        $msg4 = "Recv_put error!"
+        $msg5 = "Send_put error!"
+        $msg6 = "Send Success - %d:%d"
+        $msg7 = "Recv Success - %d:%d"
+
+     condition:
+       uint16(0) == 0x5A4D and 5 of ($msg*) 
+}
+
+rule BlackTech_AresPYDoor_str {
+     meta:
+        description = "AresPYDoor in BlackTech"
+        author = "JPCERT/CC Incident Response Group"
+        hash = "52550953e6bc748dc4d774fbea66382cc2979580173a7388c01589e8cb882659"
+
+     strings:
+        $ares1 = "ares.desktop"
+        $ares2 = "~/.ares"
+        $ares3 = "grep -v .ares .bashrc >"
+        $log1 = "[-]Error! server_hello: status_code=%d"
+        $log2 = "[i]runcmd: %s"
+        $log3 = "[i]send_output: posting data=%s"
+        $log4 = "[i]server_hello: %s"
+        $log5 = "[i]starting server_hello"
+
+     condition:
+       5 of them
+}
