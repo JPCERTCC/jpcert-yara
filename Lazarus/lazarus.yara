@@ -429,11 +429,12 @@ rule Lazarus_obfuscate_string {
         all of them
 }
 
-rule Lazarus_Bpanda3_str {
+rule Lazarus_VSingle_github {
      meta:
-        description = "Bpanda3 backdoor in Lazarus"
+        description = "VSingle using GitHub in Lazarus"
         author = "JPCERT/CC Incident Response Group"
         hash = "199ba618efc6af9280c5abd86c09cdf2d475c09c8c7ffc393a35c3d70277aed1"
+        hash = "2eb16dbc1097a590f07787ab285a013f5fe235287cb4fb948d4f9cce9efa5dbc"
 
      strings:
         $str1 = "Arcan3" ascii wide fullword
@@ -463,4 +464,53 @@ rule Lazarus_Bpanda3_str {
        (uint16(0) == 0x5A4D and
        uint32(uint32(0x3c)) == 0x00004550 and
        8 of ($str*))
+}
+
+rule Lazarus_BTREE_str {
+     meta:
+        description = "BTREE malware using Lazarus"
+        author = "JPCERT/CC Incident Response Group"
+        hash = "4fb31b9f5432fd09f1fa51a35e8de98fca6081d542827b855db4563be2e50e58"
+
+     strings:
+        $command1 = "curl -A cur1-agent -L %s -s -d da" ascii wide
+        $command2 = "cmd /c timeout /t 10 & rundll32 \"%s\" #1" ascii wide
+        $command3 = "rundll32.exe %s #1 %S" ascii wide
+        $command4 = "%s\\marcoor.dll" ascii wide
+        $rc4key = "FaDm8CtBH7W660wlbtpyWg4jyLFbgR3IvRw6EdF8IG667d0TEimzTiZ6aBteigP3" ascii wide
+
+     condition:
+       2 of ($command*) or $rc4key
+}
+
+//import "pe"
+//import "hash"
+
+//rule Lazarus_PDFIcon {
+//    meta:
+//        description = "PDF icon used in PE file by Lazarus"
+//        author = "JPCERT/CC Incident Response Group"
+//        hash = "e5466b99c1af9fe3fefdd4da1e798786a821c6d853a320d16cc10c06bc6f3fc5"
+
+//    condition:
+//        for any i in (0..pe.number_of_resources - 1) : (
+//            hash.sha256(pe.resources[i].offset, pe.resources[i].length) == "b3e0e069d00fb2a746b7ed1eb3d6470772a684349800fc84bae9f40c8a43d87a"
+//        )
+//}
+
+rule Lazarus_msi_str {
+    meta:
+        description = "msi file using Lazarus"
+        author = "JPCERT/CC Incident Response Group"
+        hash = "f0b6d6981e06c7be2e45650e5f6d39570c1ee640ccb157ddfe42ee23ad4d1cdb"
+	
+    strings:
+        $magic = /^\xD0\xCF\x11\xE0\xA1\xB1\x1A\xE1\x00\x00\x00/
+        $s1 = "New-ScheduledTaskTrigger -Once -At (Get-Date) -RepetitionInterval (New-TimeSpan -Minutes 1) -RepetitionDuration (New-TimeSpan -Days 300)" ascii wide
+        $s2 = "New-ScheduledTaskAction -Execute \"c:\\windows\\system32\\pcalua.exe" ascii wide
+        $s3 = "function sendbi(pd)" ascii wide
+        $s4 = "\\n\\n\"+g_mac()+\"\\n\\n\"+g_proc()" ascii wide
+
+     condition:
+       $magic at 0 and 2 of ($s*)
 }

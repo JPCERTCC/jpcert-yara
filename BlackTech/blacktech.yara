@@ -355,7 +355,7 @@ rule BlackTech_BTSDoor_str {
        (1 of ($pdb*) or 4 of ($data*))
 }
 
-rule BlackTech_mabackdoor_str {
+rule BlackTech_Hipid_str {
      meta:
         description = "Multi-architecture (ARM or x64) backdoor in BlackTech"
         author = "JPCERT/CC Incident Response Group"
