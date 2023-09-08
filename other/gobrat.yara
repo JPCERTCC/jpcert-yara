@@ -1,8 +1,9 @@
 import "elf"
 
-rule GobRAT {
+rule malware_GobRAT {
     meta:
-        rule_usage = "Hunting"
+        description = "GobRAT" 
+        author = "JPCERT/CC Incident Response Group" 
         hash = "C9345377CAB1A878803C3E3450BE06E0CF18B94E930090DD56F4641812FC4858"
     
     strings:
@@ -155,9 +156,10 @@ rule GobRAT {
 }
 
 
-rule GobLoaderShellScript {
+rule malware_GobRAT_Loader {
     meta:
-        rule_usage = "Hunting"
+        description = "GobRAT Loader ShellScript" 
+        author = "JPCERT/CC Incident Response Group" 
         hash = "3e44c807a25a56f4068b5b8186eee5002eed6f26d665a8b791c472ad154585d1"
 
     strings:

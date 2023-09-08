@@ -144,7 +144,7 @@ rule CryptHunter_js_downloader {
 
 rule CryptHunter_JokerSpy_macos {
      meta:
-        description = "Mach-O malware using APT29"
+        description = "Mach-O malware using CryptHunter"
         author = "JPCERT/CC Incident Response Group"
         hash = "6d3eff4e029db9d7b8dc076cfed5e2315fd54cb1ff9c6533954569f9e2397d4c"
         hash = "951039bf66cdf436c240ef206ef7356b1f6c8fffc6cbe55286ec2792bf7fe16c"
