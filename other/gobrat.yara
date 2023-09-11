@@ -156,7 +156,7 @@ rule malware_GobRAT {
 }
 
 
-rule malware_GobRAT_Loader {
+rule malware_GobRATLoader {
     meta:
         description = "GobRAT Loader ShellScript" 
         author = "JPCERT/CC Incident Response Group" 
