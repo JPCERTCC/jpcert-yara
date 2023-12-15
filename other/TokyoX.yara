@@ -19,11 +19,10 @@ rule malware_TokyoX_RAT {
 
     strings:
         $mz = { 74 6F 6B 79 6F 00 00 00 } // tokyo
-        $pe = "PE"
         $format1 = "%08lX%04lX%04lX%02lx%02lx%02lx%02lx%02lx%02lx%02lx%02lx"
         $format2 = "%d-%d-%d %d:%d:%d" wide
         $uniq_path = "C:\\Windows\\SysteSOFTWARE\\Microsoft\\Windows NT\\Cu"
 
     condition:
-        ($mz at 0 and $pe in (0x0..0x200)) or all of ($format*) or $uniq_path
+        ($mz at 0 and all of ($format*)) or $uniq_path
 }

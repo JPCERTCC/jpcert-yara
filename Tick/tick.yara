@@ -287,3 +287,37 @@ rule tick_ABK_downloader_susp_ua {
 //        (filesize<50MB) and
 //        (cuckoo.sync.mutex(/PPGword/) or cuckoo.sync.mutex(/CQFB/))
 //}
+
+rule malware_gokcpdoor_golang {
+    meta:
+        description = "gokcpdoor"
+        author = "JPCERT/CC Incident Response Group"
+        hash = "2dd8ab1493a97e0a4416e077d6ce1c35c7b2d8749592b319a7e2a8f4cd1cc008"
+
+     strings:
+        $gofunc1 = "CopyConn2StdinPipe" ascii wide
+        $gofunc2 = "CopyStdoutPipe2Conn" ascii wide
+        $gofunc3 = "handleConnection" ascii wide
+        $gofunc4 = "addudpforward" ascii wide
+        $gofunc5 = "addtcpforward" ascii wide
+        $gofunc6 = "addsocks5" ascii wide
+        $gofunc7 = "handleConnWait" ascii wide
+        $gofunc8 = "readconfig" ascii wide
+        $log1 = "[+] socks5 add ok" ascii wide
+        $log2 = "[+] portforward add ok" ascii wide
+        $log3 = "[-] First param must be one of [add,del,list]" ascii wide
+        $log4 = "[-] socks5 del param num must exceed 3!" ascii wide
+        $log5 = "[*] portforward list:" ascii wide
+        $log6 = "[*] please input a supported command, you can see help first!" ascii wide
+        $str1 = "!!!ok!!!"
+        $str2 = {23 23 23 64 6F 77 6E 6C} // ###downloadend$$$
+        $str3 = {23 23 23 75 70 6C 6F 61} // ###uploadend$$$
+        $gofile1 = "kcp.go" ascii wide
+        $gofile2 = "udp.go" ascii wide
+        $gofile3 = "target.go" ascii wide
+        $gofile4 = "exec_lin.go" ascii wide
+        $gofile5 = "gokcpdoor[0-9]" ascii wide
+
+     condition:
+        6 of ($gofunc*) or 5 of ($log*) or all of ($str*) or all of ($gofile*)
+}
