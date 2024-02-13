@@ -91,3 +91,116 @@ rule malware_sqroot_webphp {
        uint32(0) == 0x68703f3c and
        4 of ($func*)
 }
+
+rule malware_sqroot_cat {
+   meta:
+     description = "cat plugin downloaded by sqroot"
+     author = "JPCERT/CC Incident Response Group"
+     
+   strings:
+     $s1 = "Catcher start" wide
+     $s2 = "Catcher exit" wide
+     $s3 = "[%04d/%02d/%02d %02d:%02d:%02d] %s\n" wide
+     $s4 = {2A 00 6C 00 6F 00 67 00  00 00 00 00 23 00 21 00}
+
+   condition:
+     uint16(0) == 0x5A4D and
+     uint32(uint32(0x3c)) == 0x00004550 and
+     3 of them
+}
+
+rule malware_sqroot_snapshot {
+   meta:
+     description = "snapshot plugin downloaded by sqroot"
+     author = "JPCERT/CC Incident Response Group"
+     
+   strings:
+     $s1 = "e:\\vsprojects\\crataegus\\snaptik\\maz\\miniz.c" wide
+     $s2 = "%s-%02d%02d_%02d%02d%02d.maz" wide
+     $s3 = "%s%s_%02d%02d%02d(%d).png" wide
+     $s4 = "gdi_cache" wide
+     $s5 = "capture_flag.ini" wide
+     $s6 = "cf_mptmb" wide
+     $s7 = "cf_pakdir" wide
+     $s8 = "DoGdiCapture" ascii
+     
+   condition:
+     uint16(0) == 0x5A4D and
+     uint32(uint32(0x3c)) == 0x00004550 and
+     4 of them
+}
+
+rule malware_sqroot_keylogger {
+   meta:
+     description = "keylog plugin downloaded by sqroot"
+     author = "JPCERT/CC Incident Response Group"
+     
+   strings:
+     $s1 = "record-%04d%02d%02d-%02d%02d%02d.ini" ascii
+     $s2 = "g_hKeyLogMsgLoopThread exit" ascii
+     $s3 = "OCR_INI_DEBUG.abc" ascii
+     $s4 = {59 6F 75 27 72 65 20 61  63 74 69 76 61 74 65 64 00 00 00 00 52 33 32 41 63 74 69 76 65}
+
+   condition:
+     uint16(0) == 0x5A4D and
+     uint32(uint32(0x3c)) == 0x00004550 and
+     2 of them
+}
+
+rule malware_sqroot_pluginloader {
+   meta:
+     description = "plugin loader downloaded by sqroot"
+     author = "JPCERT/CC Incident Response Group"
+     
+   strings:
+     $a1 = "Active() found" ascii
+     $a2 = "Active:Thread created!" ascii
+     $b1 = {6A 74 70 61 00}
+     $b2 = {6A 74 70 63 00}
+     $b3 = {6A 74 70 74 00}
+     $b4 = "%s*.tmp" ascii
+     $c1 = "SignalS1" ascii
+     $c2 = "SignalS2" ascii
+     $c3 = "SignalS3" ascii
+     
+   condition:
+     uint16(0) == 0x5A4D and
+     uint32(uint32(0x3c)) == 0x00004550 and
+     5 of them
+}
+
+rule malware_sqroot_coreloader {
+   meta:
+     description = "loader downloaded by sqroot"
+     author = "JPCERT/CC Incident Response Group"
+     
+   strings:
+     $query = "%s?hid=%s&uid=%s&cid=%x" ascii
+     $decode_routine = {8A 8A ?? ?? ?? ?? 02 C1 32 C1 2A C1 0F B6 8E ?? ?? ?? ?? 88 86 ?? ?? ?? ?? 8D 46 ?? 99 F7 FF 8A 82 ?? ?? ?? ?? 02 C8 32 C8 2A C8 88 8E ?? ?? ?? ?? 83 C6 02 81 FE 0A 04 00 00}
+     
+   condition:
+     uint16(0) == 0x5A4D and
+     uint32(uint32(0x3c)) == 0x00004550 and
+     all of them
+}
+
+rule malware_sqroot_corerat {
+   meta:
+     description = "RAT downloaded by sqroot"
+     author = "JPCERT/CC Incident Response Group"
+     
+   strings:
+     $a1 = "openfile %s error!" ascii
+     $a2 = "remote file error!" ascii
+     $a3 = "upload well!" ascii
+     $a4 = "%s?hid=%s&uid=%s&cid=%x" ascii
+     $a5 = "%s|%s|%s|%s|%s|%s|%d|%s|" ascii
+     $b1 = {68 24 11 00 00 E8}
+     $b2 = {C7 03 37 11 00 00}
+     
+   condition:
+     uint16(0) == 0x5A4D and
+     uint32(uint32(0x3c)) == 0x00004550 and
+     (all of ($a*) or all of ($b*))
+}
+

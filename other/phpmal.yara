@@ -36,3 +36,36 @@ rule malware_seospam_php {
      condition:
        7 of them
 }
+
+rule malware_ruoji_phpwebshell {
+     meta:
+        description = "ruoji webshell"
+        author = "JPCERT/CC Incident Response Group"
+        hash = "8a389390a9ce4aba962e752218c5e9ab879b58280049a5e02b9143e750265064"
+
+     strings:
+        $s1 = "zxcszxctzxcrzxc_zxcrzxcezxc" ascii
+        $s2 = "<?php if ($_COOKIE[" ascii
+        $s3 = "'] !== $_GET['" ascii
+        $s4 = "'] && @md5($_GET['" ascii
+        $s5 = "']) === @md5($_GET['" ascii
+
+     condition:
+       4 of them
+}
+
+rule malware_spider_phpwebshell {
+     meta:
+        description = "Spider PHP Shell"
+        author = "JPCERT/CC Incident Response Group"
+        hash = "ae17d97d8f7fd5216776e2ec457a2d60567bc6cc175206d0641861f71a7e7614"
+
+     strings:
+        $s1 = "<title> Spider PHP Shell" ascii
+        $s2 = "<li><a href=\"?s=k\" id=\"t_10\" onclick=\"switchTab('t_10')\" target=\"main\"> Linux" ascii
+        $s3 = "if($_COOKIE['admin_spiderpass'] != md5($password))" ascii
+        $s4 = "case \"b\" : Guama_b(); break;" ascii
+        
+     condition:
+       2 of them
+}
